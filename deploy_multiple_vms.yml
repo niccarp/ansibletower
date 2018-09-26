@@ -9,6 +9,7 @@
         availability_zone: nova
         flavor: d1
         state: present
+        region_name: RegionOne
         nics:
           - net-id: d4e62715-1507-4593-8aa5-f869ad8040ec
           - net-id: df1fe115-c6f7-40f7-a1e7-3defad51afde
@@ -16,6 +17,15 @@
       with_items:
          - { name: vm1, flavor: d1 }
          - { name: vm2, flavor: d1 }
+      environment:
+        OS_AUTH_URL: "http://167.99.9.187/identity/v3"
+        OS_PROJECT_ID: ecbea9a4d6814bd2a15be7143b27805d
+        OS_USER_DOMAIN_NAME: Default
+        OS_USERNAME: admin
+        OS_PASSWORD: 54linux*
+        OS_REGION_NAME: RegionOne
+        OS_INTERFACE: public
+        OS_IDENTITY_API_VERSION: 3
 
     - name: Add VM to inventory
       add_host:
@@ -26,10 +36,4 @@
 
     - name: Wait to be sure ssh is available
       pause:
-        seconds: 250
-
-#    - name: Def gw
-#      command: /sbin/route del default gw 192.168.20.1
-
-#    - name: Def gw2
-#      command: /sbin/route add default gw 172.24.4.1
+        seconds: 350
