@@ -1,0 +1,54 @@
+- name: Manage new instances
+  hosts: openstack_vms
+  connection: ssh
+  user: debian
+  become: True
+  roles:
+#    - geerlingguy.ntp
+    - geerlingguy.pip
+    - geerlingguy.docker
+#    - likg.csf
+
+#  vars_files:
+#    - variables_csf.yml
+#    - ntp_conf.yml
+
+  vars:
+    pip_install_packages:
+      - name: docker
+    docker_users:
+      - debian
+#    portnumbervar: 80:80
+#    postfix_maildomain: kpfrelay01.kupfer.cl
+#    postfix_name: postfix
+#    postfix_daemon: catatnight/postfix
+
+  
+  tasks: 
+  - name: Install packages
+    apt: name=lsof state=present
+
+  - name: install saraza
+    apt: name=tmux state=present
+
+  - name: install web
+    apt: name=lynx state=present
+
+#  - name: upgrade all packages
+#    yum: name=* state=latest security=yes
+
+#  - name: Stop postfix system
+#    systemd: state=stopped enabled=no name=postfix
+
+  - name: Webserver container.
+    docker_container:
+      name: dockertest
+      image: kitematic/hello-world-nginx
+      restart_policy: unless-stopped
+      ports: 
+       - "80:80"
+#      exposed_ports:
+#        - 80
+#      command: "-p {{ portnumbervar}} " 
+#      command: "-p {{ port }} -e maildomain={{ postfix_maildomain }} --name {{ postfix_name }} -d {{ postfix_daemon }}"
+      state: started
