@@ -1,0 +1,35 @@
+- name: Launch a compute instance
+  hosts: localhost
+  tasks:
+    - name: Launch a VM
+      os_server:
+        image: debian9
+        name: "{{ item.name }}"
+        key_name: devstackrootvm
+        availability_zone: nova
+        flavor: d1
+        state: present
+        nics:
+          - net-id: d4e62715-1507-4593-8aa5-f869ad8040ec
+          - net-id: df1fe115-c6f7-40f7-a1e7-3defad51afde
+      register: my_vm
+      with_items:
+         - { name: vm1, flavor: d1 }
+         - { name: vm2, flavor: d1 }
+
+    - name: Add VM to inventory
+      add_host:
+        name: "{{ item.server.name }}"
+        groups: openstack_vms
+        ansible_host: "{{ item.server.public_v4 }}"
+      with_items: "{{ my_vm.results }}"
+
+    - name: Wait to be sure ssh is available
+      pause:
+        seconds: 250
+
+#    - name: Def gw
+#      command: /sbin/route del default gw 192.168.20.1
+
+#    - name: Def gw2
+#      command: /sbin/route add default gw 172.24.4.1
