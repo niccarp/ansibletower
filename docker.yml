@@ -1,6 +1,6 @@
 - name: Manage new instances
   hosts: openstack_vms
-  #connection: ssh
+  connection: ssh
   user: debian
   become: True
   roles:
@@ -18,10 +18,6 @@
       - name: docker
     docker_users:
       - debian
-#    portnumbervar: 80:80
-#    postfix_maildomain: kpfrelay01.kupfer.cl
-#    postfix_name: postfix
-#    postfix_daemon: catatnight/postfix
 
   
   tasks: 
@@ -34,12 +30,6 @@
   - name: install web
     apt: name=lynx state=present
 
-#  - name: upgrade all packages
-#    yum: name=* state=latest security=yes
-
-#  - name: Stop postfix system
-#    systemd: state=stopped enabled=no name=postfix
-
   - name: Webserver container.
     docker_container:
       name: dockertest
@@ -47,8 +37,4 @@
       restart_policy: unless-stopped
       ports: 
        - "80:80"
-#      exposed_ports:
-#        - 80
-#      command: "-p {{ portnumbervar}} " 
-#      command: "-p {{ port }} -e maildomain={{ postfix_maildomain }} --name {{ postfix_name }} -d {{ postfix_daemon }}"
       state: started
