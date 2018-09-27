@@ -1,6 +1,6 @@
 - name: Manage new instances
   hosts: openstack_vms
-  connection: ssh
+  #connection: ssh
   user: debian
   become: True
   roles:
